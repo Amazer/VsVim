@@ -10,7 +10,7 @@ using Vim.UI.Wpf.Properties;
 namespace Vim.UI.Wpf.Implementation.CommandMargin
 {
     [Export(typeof(ICommandMarginUtil))]
-    internal sealed class CommandMarginUtil : ICommandMarginUtil
+     public sealed class CommandMarginUtil : ICommandMarginUtil
     {
         private CommandMarginProvider _provider;
 
@@ -54,7 +54,7 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
             return false;
         }
 
-        internal static string GetStatus(IVimBuffer vimBuffer, IMode currentMode, bool forModeSwitch)
+        public static string GetStatus(IVimBuffer vimBuffer, IMode currentMode, bool forModeSwitch)
         {
             if (forModeSwitch)
             {

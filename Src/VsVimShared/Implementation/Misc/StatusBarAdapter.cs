@@ -9,7 +9,7 @@ using System.Windows.Threading;
 using Vim.UI.Wpf;
 using Vim.Extensions;
 using System.Diagnostics;
-
+using Vim.UI.Wpf.Implementation.CommandMargin;
 namespace Vim.VisualStudio.Implementation.Misc
 {
     /// <summary>
@@ -33,6 +33,7 @@ namespace Vim.VisualStudio.Implementation.Misc
             _commandMarginUtil = commandMarginUtil;
             _vimApplicationSettings = vimApplicationSettings;
             _vsStatusbar = vsServiceProvider.GetService<SVsStatusbar, IVsStatusbar>();
+//            _vsStatusbar = (IVsStatusbar)vsServiceProvider.GetService(typeof(SVsStatusbar));
             _timer = new DispatcherTimer(
                 TimeSpan.FromSeconds(.1),
                 DispatcherPriority.Normal,
@@ -41,6 +42,7 @@ namespace Vim.VisualStudio.Implementation.Misc
 
             _timer.IsEnabled = !_vimApplicationSettings.UseEditorCommandMargin;
             _vimApplicationSettings.SettingsChanged += OnSettingsChanged;
+            EventManager.AddListener(OnStatusChanged);
         }
 
         private void OnTimer(object sender, EventArgs e)
@@ -84,6 +86,43 @@ namespace Vim.VisualStudio.Implementation.Misc
             _vimProtectedOperations.BeginInvoke(
                 () => _commandMarginUtil.SetMarginVisibility(vimBuffer, _vimApplicationSettings.UseEditorCommandMargin),
                 DispatcherPriority.ApplicationIdle);
+//            vimBuffer.KeyInputEnd += OnKeyInputEnd;
+        }
+        private void OnKeyInputEnd(object sender, KeyInputEventArgs args)
+        {
+            System.Console.WriteLine("cyc add listener---");
+
+            return;
+            IVimBuffer vb = (IVimBuffer)sender;
+            if(vb==null)
+            {
+                return;
+            }
+
+            var status = CommandMarginUtil.GetStatus(vb, vb.Mode, forModeSwitch: false);
+            int frozen;
+            if(_vsStatusbar!=null)
+            {
+                _vsStatusbar.IsFrozen(out frozen);
+                if (frozen != 0)
+                {
+                    _vsStatusbar.FreezeOutput(0);
+                }
+                _vsStatusbar.SetText(status);
+            }
+        }
+        private void OnStatusChanged(string str)
+        {
+            int frozen;
+            if(_vsStatusbar!=null)
+            {
+                _vsStatusbar.IsFrozen(out frozen);
+                if (frozen != 0)
+                {
+                    _vsStatusbar.FreezeOutput(0);
+                }
+                _vsStatusbar.SetText(str);
+            }
         }
     }
 }

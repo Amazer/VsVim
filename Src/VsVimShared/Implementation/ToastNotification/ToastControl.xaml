@@ -43,6 +43,5 @@
     </UserControl.Resources>
     
     <ListBox ItemsSource="{Binding ToastNotificationCollection}">
-
     </ListBox>
 </UserControl>
