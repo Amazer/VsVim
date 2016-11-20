@@ -53,6 +53,8 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
             /// </summary>
             internal SwitchModeEventArgs SwitchModeEventArgs;
 
+            internal string CommandText;
+
             internal bool InEvent
             {
                 get { return KeyInputEventCount > 0; }
@@ -66,7 +68,7 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
         }
 
         private readonly IVimBuffer _vimBuffer;
-        private readonly CommandMarginControl _margin;
+//        private readonly CommandMarginControl _margin;
         private readonly IEditorFormatMap _editorFormatMap;
         private readonly IClassificationFormatMap _classificationFormatMap;
         private readonly FrameworkElement _parentVisualElement;
@@ -74,6 +76,7 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
         private bool _inUpdateVimBufferState;
         private bool _inCommandLineUpdate;
         private EditKind _editKind;
+        private string _commandText;
 
         /// <summary>
         /// We need to hold a reference to Text Editor visual element.
@@ -123,7 +126,7 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
         internal CommandMarginController(IVimBuffer buffer, FrameworkElement parentVisualElement, CommandMarginControl control, IEditorFormatMap editorFormatMap, IClassificationFormatMap classificationFormatMap)
         {
             _vimBuffer = buffer;
-            _margin = control;
+//            _margin = control;
             _parentVisualElement = parentVisualElement;
             _editorFormatMap = editorFormatMap;
             _classificationFormatMap = classificationFormatMap;
@@ -154,14 +157,14 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
                     {
                         ParentVisualElement.Focus();
                     }
-                    _margin.IsEditReadOnly = true;
+//                    _margin.IsEditReadOnly = true;
                     UpdateForNoEvent();
                     break;
                 case EditKind.Command:
                 case EditKind.SearchForward:
                 case EditKind.SearchBackward:
-                    WpfKeyboard.Focus(_margin.CommandLineTextBox);
-                    _margin.IsEditReadOnly = false;
+//                    WpfKeyboard.Focus(_margin.CommandLineTextBox);
+//                    _margin.IsEditReadOnly = false;
                     break;
                 default:
                     Contract.FailEnumValue(editKind);
@@ -181,13 +184,13 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
             _vimBuffer.TextView.GotAggregateFocus += OnGotAggregateFocus;
             _vimBuffer.Vim.MacroRecorder.RecordingStarted += OnRecordingStarted;
             _vimBuffer.Vim.MacroRecorder.RecordingStopped += OnRecordingStopped;
-            _margin.Loaded += OnCommandMarginLoaded;
-            _margin.Unloaded += OnCommandMarginUnloaded;
-            _margin.CommandLineTextBox.PreviewKeyDown += OnCommandLineTextBoxPreviewKeyDown;
-            _margin.CommandLineTextBox.TextChanged += OnCommandLineTextBoxTextChanged;
-            _margin.CommandLineTextBox.SelectionChanged += OnCommandLineTextBoxSelectionChanged;
-            _margin.CommandLineTextBox.LostKeyboardFocus += OnCommandLineTextBoxLostKeyboardFocus;
-            _margin.CommandLineTextBox.PreviewMouseDown += OnCommandLineTextBoxPreviewMouseDown;
+//            _margin.Loaded += OnCommandMarginLoaded;
+//            _margin.Unloaded += OnCommandMarginUnloaded;
+//            _margin.CommandLineTextBox.PreviewKeyDown += OnCommandLineTextBoxPreviewKeyDown;
+//            _margin.CommandLineTextBox.TextChanged += OnCommandLineTextBoxTextChanged;
+//            _margin.CommandLineTextBox.SelectionChanged += OnCommandLineTextBoxSelectionChanged;
+//            _margin.CommandLineTextBox.LostKeyboardFocus += OnCommandLineTextBoxLostKeyboardFocus;
+//            _margin.CommandLineTextBox.PreviewMouseDown += OnCommandLineTextBoxPreviewMouseDown;
             _editorFormatMap.FormatMappingChanged += OnFormatMappingChanged;
         }
 
@@ -203,13 +206,13 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
             _vimBuffer.TextView.GotAggregateFocus -= OnGotAggregateFocus;
             _vimBuffer.Vim.MacroRecorder.RecordingStarted -= OnRecordingStarted;
             _vimBuffer.Vim.MacroRecorder.RecordingStopped -= OnRecordingStopped;
-            _margin.Loaded -= OnCommandMarginLoaded;
-            _margin.Unloaded -= OnCommandMarginUnloaded;
-            _margin.CommandLineTextBox.PreviewKeyDown -= OnCommandLineTextBoxPreviewKeyDown;
-            _margin.CommandLineTextBox.TextChanged -= OnCommandLineTextBoxTextChanged;
-            _margin.CommandLineTextBox.SelectionChanged -= OnCommandLineTextBoxSelectionChanged;
-            _margin.CommandLineTextBox.LostKeyboardFocus -= OnCommandLineTextBoxLostKeyboardFocus;
-            _margin.CommandLineTextBox.PreviewMouseDown -= OnCommandLineTextBoxPreviewMouseDown;
+//            _margin.Loaded -= OnCommandMarginLoaded;
+//            _margin.Unloaded -= OnCommandMarginUnloaded;
+//            _margin.CommandLineTextBox.PreviewKeyDown -= OnCommandLineTextBoxPreviewKeyDown;
+//            _margin.CommandLineTextBox.TextChanged -= OnCommandLineTextBoxTextChanged;
+//            _margin.CommandLineTextBox.SelectionChanged -= OnCommandLineTextBoxSelectionChanged;
+//            _margin.CommandLineTextBox.LostKeyboardFocus -= OnCommandLineTextBoxLostKeyboardFocus;
+//            _margin.CommandLineTextBox.PreviewMouseDown -= OnCommandLineTextBoxPreviewMouseDown;
             _editorFormatMap.FormatMappingChanged -= OnFormatMappingChanged;
         }
 
@@ -282,9 +285,9 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
 
         private void UpdateForRecordingChanged()
         {
-            _margin.IsRecording = _vimBuffer.Vim.MacroRecorder.IsRecording
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+//            _margin.IsRecording = _vimBuffer.Vim.MacroRecorder.IsRecording
+//                ? Visibility.Visible
+//                : Visibility.Collapsed;
         }
 
         /// <summary>
@@ -294,14 +297,14 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
         {
             var isStatusLineVisible = _vimBuffer.GlobalSettings.LastStatus != 0;
 
-            _margin.IsStatuslineVisible = isStatusLineVisible
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+//            _margin.IsStatuslineVisible = isStatusLineVisible
+//                ? Visibility.Visible
+//                : Visibility.Collapsed;
 
             if (isStatusLineVisible)
             {
                 var statusLineFormat = _vimBuffer.GlobalSettings.StatusLine;
-                _margin.StatusLine = statusLineFormat;
+//                _margin.StatusLine = statusLineFormat;
             }
         }
 
@@ -314,14 +317,14 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
             if (SystemParameters.HighContrast)
             {
                 var textProperties = _classificationFormatMap.DefaultTextProperties;
-                _margin.TextForeground = textProperties.ForegroundBrush;
-                _margin.TextBackground = textProperties.BackgroundBrush;
+//                _margin.TextForeground = textProperties.ForegroundBrush;
+//                _margin.TextBackground = textProperties.BackgroundBrush;
             }
             else
             {
                 var propertyMap = _editorFormatMap.GetProperties(CommandMarginFormatDefinition.Name);
-                _margin.TextForeground = propertyMap.GetForegroundBrush(SystemColors.WindowTextBrush);
-                _margin.TextBackground = propertyMap.GetBackgroundBrush(SystemColors.WindowBrush);
+//                _margin.TextForeground = propertyMap.GetForegroundBrush(SystemColors.WindowTextBrush);
+//                _margin.TextBackground = propertyMap.GetBackgroundBrush(SystemColors.WindowBrush);
             }
         }
 
@@ -330,8 +333,8 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
         /// </summary>
         private void UpdateFontProperties()
         {
-            _margin.TextFontFamily = _classificationFormatMap.DefaultTextProperties.Typeface.FontFamily;
-            _margin.TextFontSize = _classificationFormatMap.DefaultTextProperties.FontRenderingEmSize;
+//            _margin.TextFontFamily = _classificationFormatMap.DefaultTextProperties.Typeface.FontFamily;
+//            _margin.TextFontSize = _classificationFormatMap.DefaultTextProperties.FontRenderingEmSize;
         }
 
         /// <summary>
@@ -345,7 +348,9 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
             _inCommandLineUpdate = true;
             try
             {
-                _margin.CommandLineTextBox.Text = commandLine;
+                //                _margin.CommandLineTextBox.Text = commandLine;
+                _commandText = commandLine;
+                _vimBufferKeyEventState.CommandText = commandLine;
                 EventManager.BroadCastEvent(commandLine);
             }
             finally
@@ -369,7 +374,8 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
                     e.Handled = true;
                     break;
                 case Key.Return:
-                    ExecuteCommand(_margin.CommandLineTextBox.Text);
+//                    ExecuteCommand(_margin.CommandLineTextBox.Text);
+                    ExecuteCommand(_commandText);
                     e.Handled = true;
                     break;
                 case Key.Up:
@@ -385,15 +391,16 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
                     {
                         // During edits we are responsible for handling the command line.  Need to 
                         // put a " into the box at the edit position
-                        var textBox = _margin.CommandLineTextBox;
-                        var text = textBox.Text;
-                        var builder = new StringBuilder();
-                        var offset = textBox.SelectionStart;
-                        builder.Append(text, 0, offset);
-                        builder.Append('"');
-                        builder.Append(text, offset, text.Length - offset);
-                        UpdateCommandLine(builder.ToString());
-                        textBox.Select(offset, 0);
+
+                        //                        var textBox = _margin.CommandLineTextBox;
+//                        var text =  textBox.Text;
+//                        var builder = new StringBuilder();
+//                        var offset =  textBox.SelectionStart;
+//                        builder.Append(text, 0, offset);
+//                        builder.Append('"');
+//                        builder.Append(text, offset, text.Length - offset);
+//                        UpdateCommandLine(builder.ToString());
+//                        textBox.Select(offset, 0);
 
                         // Now move the buffer into paste wait 
                         _vimBuffer.Process(KeyInputUtil.ApplyKeyModifiersToChar('r', VimKeyModifiers.Control));
@@ -402,11 +409,11 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
                 case Key.U:
                     if (e.KeyboardDevice.Modifiers == ModifierKeys.Control)
                     {
-                        var textBox = _margin.CommandLineTextBox;
-                        var text = textBox.Text.Substring(textBox.SelectionStart);
-                        textBox.Text = text;
-
-                        UpdateVimBufferStateWithCommandText(text);
+//                        var textBox = _margin.CommandLineTextBox;
+//                        var text = textBox.Text.Substring(textBox.SelectionStart);
+//                        textBox.Text = text;
+//
+//                        UpdateVimBufferStateWithCommandText(text);
                     }
                     break;
             }
@@ -434,18 +441,18 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
                 case VimKey.Home:
                     // Enable command line edition
                     ChangeEditKind(commandLineEditKind);
-                    _margin.UpdateCaretPosition(EditPosition.Start);
+//                    _margin.UpdateCaretPosition(EditPosition.Start);
                     args.Handled = true;
                     break;
                 case VimKey.Left:
                     ChangeEditKind(commandLineEditKind);
-                    _margin.UpdateCaretPosition(EditPosition.BeforeLastCharacter);
+//                    _margin.UpdateCaretPosition(EditPosition.BeforeLastCharacter);
                     args.Handled = true;
                     break;
                 case VimKey.Up:
                 case VimKey.Down:
                     // User is navigation through history, move caret to the end of the entry
-                    _margin.UpdateCaretPosition(EditPosition.End);
+//                    _margin.UpdateCaretPosition(EditPosition.End);
                     break;
             }
         }
@@ -611,7 +618,8 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
 
             // If we are in an edit mode make sure the user didn't delete the command prefix 
             // from the edit box 
-            var command = _margin.CommandLineTextBox.Text ?? "";
+            //            var command = _margin.CommandLineTextBox.Text ?? "";
+            var command = _commandText; 
             var prefixChar = GetPrefixChar(_editKind);
             if (prefixChar != null)
             {
@@ -645,17 +653,17 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
         /// </summary>
         private void OnCommandLineTextBoxSelectionChanged(object sender, RoutedEventArgs e)
         {
-            var textBox = _margin.CommandLineTextBox;
-            if (string.IsNullOrEmpty(textBox.SelectedText))
-            {
-                return;
-            }
-
-            var kind = CalculateCommandLineEditKind();
-            if (kind != EditKind.None)
-            {
-                ChangeEditKind(kind);
-            }
+//            var textBox = _margin.CommandLineTextBox;
+//            if (string.IsNullOrEmpty(textBox.SelectedText))
+//            {
+//                return;
+//            }
+//
+//            var kind = CalculateCommandLineEditKind();
+//            if (kind != EditKind.None)
+//            {
+//                ChangeEditKind(kind);
+//            }
         }
 
         private void OnCommandLineTextBoxLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -680,7 +688,7 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
             }
 
             ChangeEditKind(commandLineEditKind);
-            _margin.UpdateCaretPosition(EditPosition.End);
+//            _margin.UpdateCaretPosition(EditPosition.End);
             e.Handled = true;
         }
 
@@ -727,7 +735,8 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
         {
             Debug.Assert(InPasteWait);
 
-            var command = _margin.CommandLineTextBox.Text ?? "";
+            //            var command = _margin.CommandLineTextBox.Text ?? "";
+            var command = _commandText ?? "";// _margin.CommandLineTextBox.Text ?? "";
             if (e.Changes.Count == 1 && command.Length > 0)
             {
                 var change = e.Changes.First();
@@ -750,8 +759,8 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
                         builder.Append(command, 0, change.Offset);
                         builder.Append(toPaste);
                         builder.Append(command, change.Offset + 2, command.Length - (change.Offset + 2));
-                        _margin.CommandLineTextBox.Text = builder.ToString();
-                        _margin.CommandLineTextBox.Select(change.Offset + toPaste.Length, 0);
+//                        _margin.CommandLineTextBox.Text = builder.ToString();
+//                        _margin.CommandLineTextBox.Select(change.Offset + toPaste.Length, 0);
                     }
 
                     return;

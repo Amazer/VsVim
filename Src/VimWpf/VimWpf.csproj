@@ -63,7 +63,6 @@
     <Compile Include="Implementation\CharDisplay\CharDisplayTaggerSource.cs" />
     <Compile Include="Implementation\CharDisplay\CharDisplayTaggerSourceFactory.cs" />
     <Compile Include="Implementation\CharDisplay\ControlCharUtil.cs" />
-    <Compile Include="Implementation\CommandMargin\CommandMarginController - Copy.cs" />
     <Compile Include="Implementation\CommandMargin\CommandMarginUtil.cs" />
     <Compile Include="Implementation\Directory\DirectoryContentType.cs" />
     <Compile Include="Implementation\Directory\DirectoryFormatDefinition.cs" />

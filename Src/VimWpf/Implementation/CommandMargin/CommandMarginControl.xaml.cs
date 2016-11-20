@@ -122,7 +122,7 @@ namespace Vim.UI.Wpf.Implementation.CommandMargin
 
         public CommandMarginControl()
         {
-            InitializeComponent();
+//            InitializeComponent();
         }
 
         internal void UpdateCaretPosition(EditPosition editPosition)
